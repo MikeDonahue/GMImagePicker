@@ -153,7 +153,8 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
             options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:options];
+            
+            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:nil];
             [allFetchResultArray addObject:assetsFetchResult];
             [allFetchResultLabel addObject:NSLocalizedStringFromTableInBundle(@"picker.table.all-photos-label",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"All photos")];
         }
@@ -172,7 +173,6 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                 PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
                 
                 //Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
-                
                 PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
                 [userFetchResultArray addObject:assetsFetchResult];
                 [userFetchResultLabel addObject:collection.localizedTitle];
@@ -197,7 +197,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                     options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
                     options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
                     
-                    PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
+                    PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
                     if(assetsFetchResult.count>0)
                     {
                         [smartFetchResultArray addObject:assetsFetchResult];
@@ -211,49 +211,49 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     
     NSMutableArray *myPhotoStreamFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *myPhotoStreamFetchResultLabel = [[NSMutableArray alloc] init];
-//    for(PHCollection *collection in myPhotoStream)
-//    {
-//        if ([collection isKindOfClass:[PHAssetCollection class]])
-//        {
-//            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
-//            
-//            PHFetchOptions *options = [[PHFetchOptions alloc] init];
-//            
-//            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", @[@(PHAssetMediaTypeImage)]];
-//            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-//            
-//            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
-//            if(assetsFetchResult.count>0)
-//            {
-//                [myPhotoStreamFetchResultArray addObject:assetsFetchResult];
-//                [myPhotoStreamFetchResultLabel addObject:collection.localizedTitle];
-//            }
-//            
-//        }
-//    }
+    //    for(PHCollection *collection in myPhotoStream)
+    //    {
+    //        if ([collection isKindOfClass:[PHAssetCollection class]])
+    //        {
+    //            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+    //
+    //            PHFetchOptions *options = [[PHFetchOptions alloc] init];
+    //
+    //            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", @[@(PHAssetMediaTypeImage)]];
+    //            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+    //
+    //            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
+    //            if(assetsFetchResult.count>0)
+    //            {
+    //                [myPhotoStreamFetchResultArray addObject:assetsFetchResult];
+    //                [myPhotoStreamFetchResultLabel addObject:collection.localizedTitle];
+    //            }
+    //
+    //        }
+    //    }
     
     NSMutableArray *cloudSharedFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *cloudSharedFetchResultLabel = [[NSMutableArray alloc] init];
-//    for(PHCollection *collection in cloudShared)
-//    {
-//        if ([collection isKindOfClass:[PHAssetCollection class]])
-//        {
-//            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
-//            
-//            PHFetchOptions *options = [[PHFetchOptions alloc] init];
-//            
-//            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", @[@(PHAssetMediaTypeImage)]];
-//            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-//            
-//            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
-//            if(assetsFetchResult.count>0)
-//            {
-//                [cloudSharedFetchResultArray addObject:assetsFetchResult];
-//                [cloudSharedFetchResultLabel addObject:collection.localizedTitle];
-//            }
-//            
-//        }
-//    }
+    //    for(PHCollection *collection in cloudShared)
+    //    {
+    //        if ([collection isKindOfClass:[PHAssetCollection class]])
+    //        {
+    //            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+    //
+    //            PHFetchOptions *options = [[PHFetchOptions alloc] init];
+    //
+    //            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", @[@(PHAssetMediaTypeImage)]];
+    //            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+    //
+    //            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
+    //            if(assetsFetchResult.count>0)
+    //            {
+    //                [cloudSharedFetchResultArray addObject:assetsFetchResult];
+    //                [cloudSharedFetchResultLabel addObject:collection.localizedTitle];
+    //            }
+    //
+    //        }
+    //    }
     
     self.collectionsFetchResultsAssets= @[allFetchResultArray,myPhotoStreamFetchResultArray,smartFetchResultArray,cloudSharedFetchResultArray,userFetchResultArray];
     self.collectionsFetchResultsTitles= @[allFetchResultLabel,myPhotoStreamFetchResultLabel,smartFetchResultLabel,cloudSharedFetchResultLabel,userFetchResultLabel];

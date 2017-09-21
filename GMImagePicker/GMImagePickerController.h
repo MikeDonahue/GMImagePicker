@@ -8,6 +8,7 @@
 
 @import UIKit;
 @import Photos;
+#import "GMAlbumsViewController.h"
 
 
 //This is the default image picker size!
@@ -26,7 +27,7 @@ static CGSize const kPopoverContentSize = {480, 720};
 
 - (id)init:(bool)allow_v withAssets: (NSArray*)preSelectedAssets delegate: (id <GMImagePickerControllerDelegate>) delegate;
 
-@property (nonatomic, assign) BOOL allow_video;
+@property (nonatomic, assign) BOOL allowVideo;
 
 
 /**
@@ -41,12 +42,14 @@ static CGSize const kPopoverContentSize = {480, 720};
  */
 @property (nonatomic, strong) NSMutableArray *selectedAssets;
 
+@property (nonatomic, strong) GMAlbumsViewController *albumsViewController;
+
 
 /** UI Customizations **/
 
 /**
  *  Determines which smart collections are displayed (int array of enum: PHAssetCollectionSubtypeSmartAlbum)
- *  The default smart collections are: 
+ *  The default smart collections are:
  *  - Favorites
  *  - RecentlyAdded
  *  - Videos
@@ -119,6 +122,11 @@ static CGSize const kPopoverContentSize = {480, 720};
  *  toolbar, and have no camera button. Default is false. If true, this renders displaySelectionInfoToolbar a no-op.
  */
 @property (nonatomic, assign) BOOL showCameraButton;
+
+/**
+ *  True to start on the camera roll, allowing the user to go back to albums by tapping back.
+ */
+@property (nonatomic, assign) BOOL startOnCameraRoll;
 
 /**
  * True to auto select the image(s) taken with the camera if showCameraButton = YES. In the case of allowsMultipleSelection = YES,
@@ -263,7 +271,7 @@ static CGSize const kPopoverContentSize = {480, 720};
  *  Tells the delegate that the asset was selected.
  *
  *  @param picker    The controller object managing the assets picker interface.
- *  @param indexPath The asset that was selected.
+ *  @param asset The asset that was selected.
  *
  */
 - (void)assetsPickerController:(GMImagePickerController *)picker didSelectAsset:(PHAsset *)asset;
@@ -283,7 +291,7 @@ static CGSize const kPopoverContentSize = {480, 720};
  *  Tells the delegate that the item at the specified path was deselected.
  *
  *  @param picker    The controller object managing the assets picker interface.
- *  @param indexPath The asset that was deselected.
+ *  @param asset The asset that was deselected.
  *
  */
 - (void)assetsPickerController:(GMImagePickerController *)picker didDeselectAsset:(PHAsset *)asset;
@@ -308,7 +316,7 @@ static CGSize const kPopoverContentSize = {480, 720};
  *  Tells the delegate that asset was highlighted.
  *
  *  @param picker    The controller object managing the assets picker interface.
- *  @param indexPath The asset that was highlighted.
+ *  @param asset The asset that was highlighted.
  *
  */
 - (void)assetsPickerController:(GMImagePickerController *)picker didHighlightAsset:(PHAsset *)asset;
@@ -318,7 +326,7 @@ static CGSize const kPopoverContentSize = {480, 720};
  *  Tells the delegate that the highlight was removed from the asset.
  *
  *  @param picker    The controller object managing the assets picker interface.
- *  @param indexPath The asset that had its highlight removed.
+ *  @param asset The asset that had its highlight removed.
  *
  */
 - (void)assetsPickerController:(GMImagePickerController *)picker didUnhighlightAsset:(PHAsset *)asset;

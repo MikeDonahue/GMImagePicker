@@ -8,7 +8,6 @@
 
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "GMImagePickerController.h"
-#import "GMAlbumsViewController.h"
 #import "GMGridViewController.h"
 @import Photos;
 
@@ -17,7 +16,19 @@
 @end
 
 @implementation GMImagePickerController
-- (id)init:(bool)allow_v withAssets: (NSArray*)preSelectedAssets delegate: (id<GMImagePickerControllerDelegate>) delegate
+
+- (id)init
+{
+    if (self = [super init]) {
+        _startOnCameraRoll = YES;
+        _selectedAssets = [[NSMutableArray alloc] init];
+        
+        [self initialize];
+    }
+    return self;
+}
+
+- (id)init:(bool)allowVideo withAssets: (NSArray*)preSelectedAssets delegate: (id<GMImagePickerControllerDelegate>) delegate
 {
     if (self = [super init])
     {
@@ -30,174 +41,88 @@
             [_selectedAssets addObject: asset];
         }
         
-        // _selectedAssets = [fetchResult copy];
-        _allow_video = allow_v;
-        
+        _allowVideo = allowVideo;
         _shouldCancelWhenBlur = YES;
         
-        // Default values:
-        _displaySelectionInfoToolbar = YES;
-        _displayAlbumsNumberOfAssets = YES;
-        _autoDisableDoneButton = YES;
-        _allowsMultipleSelection = YES;
-        _confirmSingleSelection = NO;
-        _showCameraButton = NO;
-        
-        // Grid configuration:
-        if([self.delegate respondsToSelector:@selector(assetsPickerControllerColumnInPortrait)] && [self.delegate respondsToSelector:@selector(assetsPickerControllerColumnInLandscape)]) {
-            _colsInPortrait =  [self.delegate assetsPickerControllerColumnInPortrait];
-            _colsInLandscape =  [self.delegate assetsPickerControllerColumnInLandscape];
-        } else {
-            NSOperatingSystemVersion ios10_0_1 = (NSOperatingSystemVersion){10, 0, 1};
-            if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
-                if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios10_0_1]) {
-                    // iOS 8.0.1 and above logic
-                    _colsInPortrait = 6;
-                    _colsInLandscape = 10;
-                } else {
-                    // iOS 8.0.0 and below logic
-                    _colsInPortrait = 4;
-                    _colsInLandscape = 5;
-                }
-                
-            }else{
-                _colsInPortrait = 3;
-                _colsInLandscape = 5;
-            }
-        }
-        _minimumInteritemSpacing = 2.0;
-        
-        // Sample of how to select the collections you want to display:
-        //        _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
-        //                                    @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
-        //                                    @(PHAssetCollectionSubtypeSmartAlbumVideos),
-        //                                    @(PHAssetCollectionSubtypeSmartAlbumSlomoVideos),
-        //                                    @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
-        //                                    @(PHAssetCollectionSubtypeSmartAlbumBursts),
-        //                                    @(PHAssetCollectionSubtypeSmartAlbumPanoramas)];
-        _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
-                                    @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
-                                    @(PHAssetCollectionSubtypeSmartAlbumPanoramas)];
-        
-        // If you don't want to show smart collections, just put _customSmartCollections to nil;
-        //_customSmartCollections=nil;
-        
-        // Which media types will display
-        //        _mediaTypes = @[@(PHAssetMediaTypeAudio),
-        //                        @(PHAssetMediaTypeVideo),
-        //                        @(PHAssetMediaTypeImage)];
-        _mediaTypes = @[@(PHAssetMediaTypeImage)];
-        self.preferredContentSize = kPopoverContentSize;
-        
-        // UI Customisation
-        _pickerBackgroundColor = [UIColor whiteColor];
-        _pickerTextColor = [UIColor darkTextColor];
-        _pickerFontName = @"HelveticaNeue";
-        _pickerBoldFontName = @"HelveticaNeue-Bold";
-        _pickerFontNormalSize = 14.0f;
-        _pickerFontHeaderSize = 17.0f;
-        
-        _navigationBarBackgroundColor = [UIColor whiteColor];
-        _navigationBarTextColor = [UIColor darkTextColor];
-        _navigationBarTintColor = [UIColor darkTextColor];
-        
-        _toolbarBarTintColor = [UIColor whiteColor];
-        _toolbarTextColor = [UIColor darkTextColor];
-        _toolbarTintColor = [UIColor darkTextColor];
-        
-        _pickerStatusBarStyle = UIStatusBarStyleDefault;
-        _barStyle = UIBarStyleDefault;
-        [self setupNavigationController];
-    }
-    return self;
-}
-
-- (id)init
-{
-    if (self = [super init]) {
-        _selectedAssets = [[NSMutableArray alloc] init];
-        
-        // Default values:
-        _displaySelectionInfoToolbar = YES;
-        _displayAlbumsNumberOfAssets = YES;
-        _autoDisableDoneButton = YES;
-        _allowsMultipleSelection = YES;
-        _confirmSingleSelection = NO;
-        _showCameraButton = NO;
-        
-        // Grid configuration:
-        if([self.delegate respondsToSelector:@selector(assetsPickerControllerColumnInPortrait)] && [self.delegate respondsToSelector:@selector(assetsPickerControllerColumnInLandscape)]) {
-            _colsInPortrait =  [self.delegate assetsPickerControllerColumnInPortrait];
-            _colsInLandscape =  [self.delegate assetsPickerControllerColumnInLandscape];
-        } else {
-            NSOperatingSystemVersion ios10_0_1 = (NSOperatingSystemVersion){10, 0, 1};
-            if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
-                if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios10_0_1]) {
-                    // iOS 8.0.1 and above logic
-                    _colsInPortrait = 6;
-                    _colsInLandscape = 10;
-                } else {
-                    // iOS 8.0.0 and below logic
-                    _colsInPortrait = 4;
-                    _colsInLandscape = 5;
-                }
-                
-            }else{
-                _colsInPortrait = 3;
-                _colsInLandscape = 5;
-            }
-        }
-        
-        _minimumInteritemSpacing = 2.0;
-        
-        // Sample of how to select the collections you want to display:
-        _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
-                                    @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
-                                    @(PHAssetCollectionSubtypeSmartAlbumVideos),
-                                    @(PHAssetCollectionSubtypeSmartAlbumSlomoVideos),
-                                    @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
-                                    @(PHAssetCollectionSubtypeSmartAlbumBursts),
-                                    @(PHAssetCollectionSubtypeSmartAlbumPanoramas)];
-        // If you don't want to show smart collections, just put _customSmartCollections to nil;
-        //_customSmartCollections=nil;
-        
-        // Which media types will display
-        _mediaTypes = @[@(PHAssetMediaTypeAudio),
-                        @(PHAssetMediaTypeVideo),
-                        @(PHAssetMediaTypeImage)];
-        
-        self.preferredContentSize = kPopoverContentSize;
-        
-        // UI Customisation
-        _pickerBackgroundColor = [UIColor whiteColor];
-        _pickerTextColor = [UIColor darkTextColor];
-        _pickerFontName = @"HelveticaNeue";
-        _pickerBoldFontName = @"HelveticaNeue-Bold";
-        _pickerFontNormalSize = 14.0f;
-        _pickerFontHeaderSize = 17.0f;
-        
-        _navigationBarBackgroundColor = [UIColor whiteColor];
-        _navigationBarTextColor = [UIColor darkTextColor];
-        _navigationBarTintColor = [UIColor darkTextColor];
-        
-        _toolbarBarTintColor = [UIColor whiteColor];
-        _toolbarTextColor = [UIColor darkTextColor];
-        _toolbarTintColor = [UIColor darkTextColor];
-        
-        _pickerStatusBarStyle = UIStatusBarStyleDefault;
-        _barStyle = UIBarStyleDefault;
-        // Save to the album
-        
-
-        
+        [self initialize];
         
     }
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)initialize {
+    // Default values:
+    _displaySelectionInfoToolbar = YES;
+    _displayAlbumsNumberOfAssets = YES;
+    _autoDisableDoneButton = YES;
+    _allowsMultipleSelection = YES;
+    _confirmSingleSelection = NO;
+    _showCameraButton = NO;
+    _minimumInteritemSpacing = 2.0;
+    
+    _albumsViewController = [[GMAlbumsViewController alloc] init];
+    
+    // Grid configuration:
+    if([self.delegate respondsToSelector:@selector(assetsPickerControllerColumnInPortrait)] && [self.delegate respondsToSelector:@selector(assetsPickerControllerColumnInLandscape)]) {
+        _colsInPortrait =  [self.delegate assetsPickerControllerColumnInPortrait];
+        _colsInLandscape =  [self.delegate assetsPickerControllerColumnInLandscape];
+    } else {
+        NSOperatingSystemVersion ios10_0_1 = (NSOperatingSystemVersion){10, 0, 1};
+        if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
+            if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:ios10_0_1]) {
+                // iOS 8.0.1 and above logic
+                _colsInPortrait = 6;
+                _colsInLandscape = 10;
+            } else {
+                // iOS 8.0.0 and below logic
+                _colsInPortrait = 4;
+                _colsInLandscape = 5;
+            }
+            
+        } else{
+            _colsInPortrait = 3;
+            _colsInLandscape = 5;
+        }
+    }
+    
+    // Sample of how to select the collections you want to display:
+    _customSmartCollections = @[@(PHAssetCollectionSubtypeSmartAlbumFavorites),
+                                @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded),
+                                @(PHAssetCollectionSubtypeSmartAlbumVideos),
+                                @(PHAssetCollectionSubtypeSmartAlbumSlomoVideos),
+                                @(PHAssetCollectionSubtypeSmartAlbumTimelapses),
+                                @(PHAssetCollectionSubtypeSmartAlbumBursts),
+                                @(PHAssetCollectionSubtypeSmartAlbumPanoramas)];
+    
+    _mediaTypes = @[@(PHAssetMediaTypeVideo),
+                    @(PHAssetMediaTypeImage)];
+    
+    self.preferredContentSize = kPopoverContentSize;
+    
+    _pickerBackgroundColor = [UIColor whiteColor];
+    _pickerTextColor = [UIColor darkTextColor];
+    _pickerFontName = @"HelveticaNeue";
+    _pickerBoldFontName = @"HelveticaNeue-Bold";
+    _pickerFontNormalSize = 14.0f;
+    _pickerFontHeaderSize = 17.0f;
+    
+    _navigationBarBackgroundColor = [UIColor whiteColor];
+    _navigationBarTextColor = [UIColor darkTextColor];
+    _navigationBarTintColor = [UIColor darkTextColor];
+    
+    _toolbarBarTintColor = [UIColor whiteColor];
+    _toolbarTextColor = [UIColor darkTextColor];
+    _toolbarTintColor = [UIColor darkTextColor];
+    
+    _pickerStatusBarStyle = UIStatusBarStyleDefault;
+    _barStyle = UIBarStyleDefault;
+    
+    [self setupNavigationController];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     
     // Ensure nav and toolbar customisations are set. Defaults are in place, but the user may have changed them
     self.view.backgroundColor = _pickerBackgroundColor;
@@ -225,6 +150,20 @@
     [self updateToolbar];
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    
+    // Push GMGridViewController
+    if (_startOnCameraRoll) {
+        GMGridViewController *gridViewController = [[GMGridViewController alloc] initWithPicker:self];
+        gridViewController.title = NSLocalizedStringFromTableInBundle(@"picker.table.all-photos-label",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"All photos");
+        gridViewController.assetsFetchResults = [[_albumsViewController.collectionsFetchResultsAssets objectAtIndex:0] objectAtIndex:0];
+        
+        [_navigationController pushViewController:gridViewController animated:NO];
+    }
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return _pickerStatusBarStyle;
 }
@@ -232,61 +171,15 @@
 
 #pragma mark - Setup Navigation Controller
 
-//- (void)setupNavigationController
-//{
-//    GMAlbumsViewController *albumsViewController = [[GMAlbumsViewController alloc] init];
-//    _navigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
-//    _navigationController.delegate = self;
-//    
-//    _navigationController.navigationBar.translucent = YES;
-//    [_navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-//    _navigationController.navigationBar.shadowImage = [UIImage new];
-//    
-//    [_navigationController willMoveToParentViewController:self];
-//    [_navigationController.view setFrame:self.view.frame];
-//    [self.view addSubview:_navigationController.view];
-//    [self addChildViewController:_navigationController];
-//    [_navigationController didMoveToParentViewController:self];
-//    
-//    if([self.delegate respondsToSelector:@selector(shouldSelectAllAlbumCell)]){
-//        if([self.delegate respondsToSelector:@selector(controllerTitle)])
-//            self.title = [self.delegate controllerTitle];
-//        
-//        if([self.delegate respondsToSelector:@selector(controllerCustomDoneButtonTitle)])
-//            self.customDoneButtonTitle = [self.delegate controllerCustomDoneButtonTitle];
-//        
-//        if([self.delegate respondsToSelector:@selector(controllerCustomCancelButtonTitle)])
-//            self.customCancelButtonTitle = [self.delegate controllerCustomCancelButtonTitle];
-//        
-//        if([self.delegate respondsToSelector:@selector(controllerCustomNavigationBarPrompt)])
-//            self.customNavigationBarPrompt = [self.delegate controllerCustomNavigationBarPrompt];
-//        
-//        //        PHAuthorizationStatus authStatus = [PHPhotoLibrary authorizationStatus];
-//        //        // Check if the user has access to photos
-//        //        if (authStatus == PHAuthorizationStatusAuthorized) {
-//        //            if([self.delegate shouldSelectAllAlbumCell]){
-//        //                [albumsViewController selectAllAlbumsCell];
-//        //            }
-//        //        }
-//    }
-//}
 - (void)setupNavigationController
 {
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    
-    GMAlbumsViewController *albumsViewController = [[GMAlbumsViewController alloc] init];
-    
-    
-    GMGridViewController *gridViewController = [[GMGridViewController alloc] initWithPicker:self];
-    gridViewController.title = NSLocalizedStringFromTableInBundle(@"picker.table.all-photos-label",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"All photos");
-    
     //All album: Sorted by descending creation date.
     NSMutableArray *allFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *allFetchResultLabel = [[NSMutableArray alloc] init];
     {
         if(![self.mediaTypes isEqual:[NSNull null]] && self != nil){
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
-            if(_allow_video){
+            if(_allowVideo){
                 _mediaTypes = @[@(PHAssetMediaTypeImage),@(PHAssetMediaTypeVideo)];
             }
             options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.mediaTypes];
@@ -298,30 +191,17 @@
         }
     }
     
-    albumsViewController.collectionsFetchResultsAssets= @[allFetchResultArray];
-    albumsViewController.collectionsFetchResultsTitles= @[allFetchResultLabel];
+    _albumsViewController.collectionsFetchResultsAssets= @[allFetchResultArray];
+    _albumsViewController.collectionsFetchResultsTitles= @[allFetchResultLabel];
     
-    
-    gridViewController.assetsFetchResults = [[albumsViewController.collectionsFetchResultsAssets objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    
-    
-    _navigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
+    _navigationController = [[UINavigationController alloc] initWithRootViewController:_albumsViewController];
     _navigationController.delegate = self;
-    
-    
-    //    _navigationController.navigationBar.translucent = YES;
-    //    [_navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    //    _navigationController.navigationBar.shadowImage = [UIImage new];
     
     [_navigationController willMoveToParentViewController:self];
     [_navigationController.view setFrame:self.view.frame];
     [self.view addSubview:_navigationController.view];
     [self addChildViewController:_navigationController];
     [_navigationController didMoveToParentViewController:self];
-    
-    
-    // Push GMGridViewController
-    [_navigationController pushViewController:gridViewController animated:YES];
 }
 
 #pragma mark - UIAlertViewDelegate
@@ -482,7 +362,7 @@
     
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    if(_allow_video){
+    if(_allowVideo){
         picker.mediaTypes = @[(NSString *)kUTTypeImage,(NSString *)kUTTypeMovie];
         picker.videoQuality = UIImagePickerControllerQualityTypeHigh;
     }else{
@@ -560,7 +440,7 @@
                                        self,
                                        @selector(image:finishedSavingWithError:contextInfo:),
                                        nil);
-    }else if ([mediaType isEqualToString:(NSString *)kUTTypeMovie]) {
+    } else if ([mediaType isEqualToString:(NSString *)kUTTypeMovie]) {
         __block NSURL *movieUrl = info[UIImagePickerControllerMediaURL];
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         
