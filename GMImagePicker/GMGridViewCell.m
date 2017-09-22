@@ -7,7 +7,7 @@
 //
 
 #import "GMGridViewCell.h"
-#import "Masonry.h"
+//#import "Masonry.h"
 
 @interface GMGridViewCell ()
 @end
@@ -68,15 +68,49 @@ static UIColor *backgroundColor;
         }*/
         _imageView.clipsToBounds = YES;
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
-//        _imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+
         [self addSubview:_imageView];
-        [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.equalTo(_imageView.superview.mas_width);
-            make.height.equalTo(_imageView.superview.mas_height);
-            make.centerX.equalTo(_imageView.superview.mas_centerX);
-            make.centerY.equalTo(_imageView.superview.mas_centerY);
-        }];
         
+        NSLayoutConstraint *width =[NSLayoutConstraint
+                                    constraintWithItem:_imageView
+                                    attribute:NSLayoutAttributeWidth
+                                    relatedBy:0
+                                    toItem:_imageView.superview
+                                    attribute:NSLayoutAttributeWidth
+                                    multiplier:1.0
+                                    constant:0];
+        
+        NSLayoutConstraint *height =[NSLayoutConstraint
+                                     constraintWithItem:_imageView
+                                     attribute:NSLayoutAttributeHeight
+                                     relatedBy:0
+                                     toItem:_imageView.superview
+                                     attribute:NSLayoutAttributeHeight
+                                     multiplier:1.0
+                                     constant:0];
+        
+        NSLayoutConstraint *top = [NSLayoutConstraint
+                                   constraintWithItem:_imageView
+                                   attribute:NSLayoutAttributeTop
+                                   relatedBy:NSLayoutRelationEqual
+                                   toItem:_imageView.superview
+                                   attribute:NSLayoutAttributeTop
+                                   multiplier:1.0f
+                                   constant:0.f];
+        
+        NSLayoutConstraint *leading = [NSLayoutConstraint
+                                       constraintWithItem:_imageView
+                                       attribute:NSLayoutAttributeLeading
+                                       relatedBy:NSLayoutRelationEqual
+                                       toItem:_imageView.superview
+                                       attribute:NSLayoutAttributeLeading
+                                       multiplier:1.0f
+                                       constant:0.f];
+        
+        [_imageView.superview addConstraint:width];
+        [_imageView.superview addConstraint:height];
+        [_imageView.superview addConstraint:top];
+        [_imageView.superview addConstraint:leading];
         
         // The video gradient, label & icon
         float x_offset = 4.0f;
