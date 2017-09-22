@@ -7,7 +7,6 @@
 //
 
 #import "GMGridViewCell.h"
-//#import "Masonry.h"
 
 @interface GMGridViewCell ()
 @end
@@ -48,29 +47,18 @@ static UIColor *backgroundColor;
 - (id)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
-        self.opaque                 = NO;
-        self.enabled                = YES;
-        
-        CGFloat cellSize = self.contentView.bounds.size.width;
+        self.opaque = NO;
         self.backgroundColor = backgroundColor;
-        // The image view
+        self.enabled = YES;
+        self.assetRequestID  = PHInvalidImageRequestID;
+
         _imageView = [UIImageView new];
-        _imageView.frame = CGRectMake(0, 0, cellSize, cellSize);
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        _assetRequestID  = PHInvalidImageRequestID;
-        /*if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        {
-            _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        }
-        else
-        {
-            _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        }*/
         _imageView.clipsToBounds = YES;
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
-
-        [self addSubview:_imageView];
         
+        [self addSubview:_imageView];
+       
         NSLayoutConstraint *width =[NSLayoutConstraint
                                     constraintWithItem:_imageView
                                     attribute:NSLayoutAttributeWidth
@@ -96,7 +84,7 @@ static UIColor *backgroundColor;
                                    toItem:_imageView.superview
                                    attribute:NSLayoutAttributeTop
                                    multiplier:1.0f
-                                   constant:0.f];
+                                   constant:0];
         
         NSLayoutConstraint *leading = [NSLayoutConstraint
                                        constraintWithItem:_imageView
@@ -105,12 +93,13 @@ static UIColor *backgroundColor;
                                        toItem:_imageView.superview
                                        attribute:NSLayoutAttributeLeading
                                        multiplier:1.0f
-                                       constant:0.f];
+                                       constant:0];
+         
+         [_imageView.superview addConstraint:width];
+         [_imageView.superview addConstraint:height];
+         [_imageView.superview addConstraint:top];
+         [_imageView.superview addConstraint:leading];
         
-        [_imageView.superview addConstraint:width];
-        [_imageView.superview addConstraint:height];
-        [_imageView.superview addConstraint:top];
-        [_imageView.superview addConstraint:leading];
         
         // The video gradient, label & icon
         float x_offset = 4.0f;

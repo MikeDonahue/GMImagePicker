@@ -291,13 +291,13 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 
 #pragma mark - Collection View Layout
-- (void)viewSafeAreaInsetsDidChange {
-    [super viewSafeAreaInsetsDidChange];
-    UIEdgeInsets contentInset = self.collectionView.contentInset;
-    contentInset.left = self.view.safeAreaInsets.left;
-    contentInset.right = self.view.safeAreaInsets.right;
-    self.collectionView.contentInset = contentInset;
-}
+//- (void)viewSafeAreaInsetsDidChange {
+//    [super viewSafeAreaInsetsDidChange];
+//    UIEdgeInsets contentInset = self.collectionView.contentInset;
+//    contentInset.left = self.view.safeAreaInsets.left;
+//    contentInset.right = self.view.safeAreaInsets.right;
+//    self.collectionView.contentInset = contentInset;
+//}
 
 - (UICollectionViewFlowLayout *)collectionViewFlowLayoutForOrientation:(UIInterfaceOrientation)orientation
 {
@@ -469,13 +469,13 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     CGFloat gutter = 1;//[self getGutter];
     CGFloat columns = [self getColumns];
     
-    if(@available(iOS 11, *)){
-        CGFloat value = floorf((((self.view.bounds.size.width-self.view.safeAreaInsets.left-self.view.safeAreaInsets.right) - (columns - 1) * gutter - 2 * margin) / columns));
-        return CGSizeMake(value, value);
-    }else{
+//    if(@available(iOS 11, *)){
+//        CGFloat value = floorf((((self.view.bounds.size.width-self.view.safeAreaInsets.left-self.view.safeAreaInsets.right) - (columns - 1) * gutter - 2 * margin) / columns));
+//        return CGSizeMake(value, value);
+//    }else{
         CGFloat value = floorf(((self.view.bounds.size.width - (columns - 1) * gutter - 2 * margin) / columns));
         return CGSizeMake(value, value);
-    }
+//    }
 }
 
 -(CGFloat) getColumns{
