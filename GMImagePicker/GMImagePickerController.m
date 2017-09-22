@@ -282,7 +282,6 @@
     }
 }
 
-
 #pragma mark - User finish Actions
 
 - (void)dismiss:(id)sender
@@ -294,14 +293,14 @@
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
-
 - (void)finishPickingAssets:(id)sender
 {
-    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
-        [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
-    }
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
+        if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
+            [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
+        }
+    }];
 }
-
 
 #pragma mark - Toolbar Title
 
@@ -339,14 +338,18 @@
     }
 }
 
-
 #pragma mark - Toolbar Items
 
 - (void)cameraButtonPressed:(UIBarButtonItem *)button
 {
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Camera!"
-                                                        message:@"Sorry, this device does not have a camera."
+        // TODO: Use localized strings, not ready since all languages are not translated
+        NSString *title = NSLocalizedStringFromTableInBundle(@"picker.camera.unavailable.title", @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"");
+        
+        NSString *message = NSLocalizedStringFromTableInBundle(@"picker.camera.unavailable.message", @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"");
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Camera Not Supported"
+                                                        message:@"Using the camera is not supported on this device"
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];

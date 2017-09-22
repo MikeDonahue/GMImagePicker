@@ -49,3 +49,9 @@
 
 /* Action (button) agree/yes/approve */
 "picker.action.yes" = "Yes";
+
+/* Alert title when camera is not supported */
+"picker.camera.unavailable.title" = "Camera Not Supported";
+
+/* Alert message when camera is not supported */
+"picker.camera.unavailable.message" = "Using the camera is not supported on your device";
