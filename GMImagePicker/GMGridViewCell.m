@@ -58,49 +58,12 @@ static UIColor *backgroundColor;
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
         
         [self addSubview:_imageView];
-       
-        NSLayoutConstraint *width =[NSLayoutConstraint
-                                    constraintWithItem:_imageView
-                                    attribute:NSLayoutAttributeWidth
-                                    relatedBy:0
-                                    toItem:_imageView.superview
-                                    attribute:NSLayoutAttributeWidth
-                                    multiplier:1.0
-                                    constant:0];
         
-        NSLayoutConstraint *height =[NSLayoutConstraint
-                                     constraintWithItem:_imageView
-                                     attribute:NSLayoutAttributeHeight
-                                     relatedBy:0
-                                     toItem:_imageView.superview
-                                     attribute:NSLayoutAttributeHeight
-                                     multiplier:1.0
-                                     constant:0];
-        
-        NSLayoutConstraint *top = [NSLayoutConstraint
-                                   constraintWithItem:_imageView
-                                   attribute:NSLayoutAttributeTop
-                                   relatedBy:NSLayoutRelationEqual
-                                   toItem:_imageView.superview
-                                   attribute:NSLayoutAttributeTop
-                                   multiplier:1.0f
-                                   constant:0];
-        
-        NSLayoutConstraint *leading = [NSLayoutConstraint
-                                       constraintWithItem:_imageView
-                                       attribute:NSLayoutAttributeLeading
-                                       relatedBy:NSLayoutRelationEqual
-                                       toItem:_imageView.superview
-                                       attribute:NSLayoutAttributeLeading
-                                       multiplier:1.0f
-                                       constant:0];
-         
-         [_imageView.superview addConstraint:width];
-         [_imageView.superview addConstraint:height];
-         [_imageView.superview addConstraint:top];
-         [_imageView.superview addConstraint:leading];
-        
-        
+        [[_imageView.topAnchor constraintEqualToAnchor:self.topAnchor] setActive:YES];
+        [[_imageView.leftAnchor constraintEqualToAnchor:self.leftAnchor] setActive:YES];
+        [[_imageView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor] setActive:YES];
+        [[_imageView.rightAnchor constraintEqualToAnchor:self.rightAnchor] setActive:YES];
+           
         // The video gradient, label & icon
         float x_offset = 4.0f;
         UIColor *topGradient = [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:0.0];

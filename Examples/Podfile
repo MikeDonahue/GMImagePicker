@@ -6,7 +6,6 @@ target 'GMPhotoPicker' do
   # use_frameworks!
 
   # Pods for GMPhotoPicker
-  pod "Masonry"
   target 'GMPhotoPickerTests' do
     inherit! :search_paths
     # Pods for testing
