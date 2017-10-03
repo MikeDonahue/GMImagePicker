@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
 	s.social_media_url   = "https://twitter.com/guillermomp87"
 
 	# ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-	s.platform     = :ios, "8.0"
+	s.platform     = :ios, "9.0"
 
 	# ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 	s.source       = { :git => "https://github.com/guillermomuntaner/GMImagePicker.git", :tag => "0.0.2" }
