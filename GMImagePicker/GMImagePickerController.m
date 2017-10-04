@@ -56,7 +56,7 @@
     _displayAlbumsNumberOfAssets = YES;
     _autoDisableDoneButton = YES;
     _allowsMultipleSelection = NO;
-    _confirmSingleSelection = YES;
+    _confirmSingleSelection = NO;
     _showCameraButton = NO;
     _minimumInteritemSpacing = 2.0;
     
