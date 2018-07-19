@@ -148,11 +148,6 @@
     _navigationController.navigationBar.titleTextAttributes = attributes;
     
     [self updateToolbar];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
     
     // Push GMGridViewController
     if (_startOnCameraRoll) {
@@ -208,37 +203,39 @@
 
 - (void)selectAsset:(PHAsset *)asset
 {
-    [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
-    [self updateDoneButton];
-    
-    if (!self.allowsMultipleSelection) {
-        if (self.confirmSingleSelection) {
-            NSString *message = self.confirmSingleSelectionPrompt ? self.confirmSingleSelectionPrompt : [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.message",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Do you want to select the image you tapped on?")];
-            
-            UIAlertController * alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.title",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Are You Sure?")] message:message preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction* yesButton = [UIAlertAction actionWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.yes",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Yes")] style:UIAlertActionStyleDefault handler:^(UIAlertAction * action)
-            {
+    if ([self.selectedAssets containsObject:asset] == false) {
+        [self.selectedAssets addObject: asset];
+        
+        [self updateDoneButton];
+        if (!self.allowsMultipleSelection) {
+            if (self.confirmSingleSelection) {
+                NSString *message = self.confirmSingleSelectionPrompt ? self.confirmSingleSelectionPrompt : [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.message",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Do you want to select the image you tapped on?")];
+                
+                UIAlertController * alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.confirm.title",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Are You Sure?")] message:message preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* yesButton = [UIAlertAction actionWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.yes",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"Yes")] style:UIAlertActionStyleDefault handler:^(UIAlertAction * action)
+                                            {
+                                                [self finishPickingAssets:self];
+                                            }];
+                
+                UIAlertAction* noButton = [UIAlertAction actionWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.no",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"No")] style:UIAlertActionStyleDefault handler: nil];
+                
+                [alert addAction: yesButton];
+                [alert addAction: noButton];
+                
+                [self presentViewController:alert animated:YES completion:nil];
+            } else {
                 [self finishPickingAssets:self];
-            }];
-            
-            UIAlertAction* noButton = [UIAlertAction actionWithTitle:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"picker.action.no",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class],  @"No")] style:UIAlertActionStyleDefault handler: nil];
-            
-            [alert addAction: yesButton];
-            [alert addAction: noButton];
-            
-            [self presentViewController:alert animated:YES completion:nil];
-        } else {
-            [self finishPickingAssets:self];
+            }
+        } else if (self.displaySelectionInfoToolbar || self.showCameraButton) {
+            [self updateToolbar];
         }
-    } else if (self.displaySelectionInfoToolbar || self.showCameraButton) {
-        [self updateToolbar];
     }
 }
 
 - (void)deselectAsset:(PHAsset *)asset
 {
-    [self.selectedAssets removeObjectAtIndex:[self.selectedAssets indexOfObject:asset]];
+    [self.selectedAssets removeObject: asset];
     if (self.selectedAssets.count == 0) {
         [self updateDoneButton];
     }
@@ -370,7 +367,7 @@
         picker.mediaTypes = @[(NSString *)kUTTypeImage];
     }
     picker.allowsEditing = self.allowsEditingCameraImages;
-
+    
     picker.delegate = self;
     picker.modalPresentationStyle = UIModalPresentationPopover;
     
