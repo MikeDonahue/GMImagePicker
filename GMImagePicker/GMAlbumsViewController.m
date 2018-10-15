@@ -160,8 +160,10 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
             
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:nil];
-            [allFetchResultArray addObject:assetsFetchResult];
-            [allFetchResultLabel addObject:NSLocalizedStringFromTableInBundle(@"picker.table.all-photos-label",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"All photos")];
+            if (assetsFetchResult.count > 0) {
+                [allFetchResultArray addObject:assetsFetchResult];
+                [allFetchResultLabel addObject:NSLocalizedStringFromTableInBundle(@"picker.table.all-photos-label",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"All photos")];
+            }
         }
     }
     
@@ -179,8 +181,11 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                 
                 //Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
                 PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
-                [userFetchResultArray addObject:assetsFetchResult];
-                [userFetchResultLabel addObject:collection.localizedTitle];
+                
+                if (assetsFetchResult.count > 0) {
+                    [userFetchResultArray addObject:assetsFetchResult];
+                    [userFetchResultLabel addObject:collection.localizedTitle];
+                }
             }
         }
     }
@@ -199,8 +204,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
 
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
-            if(assetsFetchResult.count>0)
-            {
+            if (assetsFetchResult.count > 0) {
                 [myPhotoStreamFetchResultArray addObject:assetsFetchResult];
                 [myPhotoStreamFetchResultLabel addObject:collection.localizedTitle];
             }
@@ -226,8 +230,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                     options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
                     
                     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
-                    if(assetsFetchResult.count>0)
-                    {
+                    if (assetsFetchResult.count > 0) {
                         [smartFetchResultArray addObject:assetsFetchResult];
                         [smartFetchResultLabel addObject:collection.localizedTitle];
                     }
@@ -250,8 +253,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
             
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
-            if(assetsFetchResult.count>0)
-            {
+            if (assetsFetchResult.count > 0) {
                 [cloudSharedFetchResultArray addObject:assetsFetchResult];
                 [cloudSharedFetchResultLabel addObject:collection.localizedTitle];
             }
@@ -274,8 +276,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
             
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
-            if(assetsFetchResult.count>0)
-            {
+            if (assetsFetchResult.count > 0) {
                 [syncedAlbumFetchResultArray addObject:assetsFetchResult];
                 [syncedAlbumFetchResultLabel addObject:collection.localizedTitle];
             }
