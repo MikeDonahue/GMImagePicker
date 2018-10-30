@@ -134,13 +134,14 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 
 -(void)updateFetchResults
 {
-    NSLog(@"updateFetchResults");
-    //What I do here is fetch both the albums list and the assets of each album.
-    //This way I have acces to the number of items in each album, I can load the 3
-    //thumbnails directly and I can pass the fetched result to the gridViewController.
+    self.collectionsFetchResultsAssets = nil;
+    self.collectionsFetchResultsTitles = nil;
     
-    self.collectionsFetchResultsAssets=nil;
-    self.collectionsFetchResultsTitles=nil;
+    GMImagePickerController *picker = self.picker;
+    
+    if (picker.mediaTypes.count == 0) {
+        return;
+    }
     
     //Fetch PHAssetCollections:
 //    self.collectionsFetchResults = @[topLevelUserCollections, myPhotoStreamAlbums, cloudSharedAlbums, smartAlbums,  syncedAlbums];
@@ -154,9 +155,9 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     NSMutableArray *allFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *allFetchResultLabel = [[NSMutableArray alloc] init];
     {
-        if(![self.picker.mediaTypes isEqual:[NSNull null]] && self.picker != nil){
+        if(![picker.mediaTypes isEqual:[NSNull null]] && picker != nil){
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
-            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
+            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", picker.mediaTypes];
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
             
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:nil];
@@ -172,15 +173,15 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     NSMutableArray *userFetchResultLabel = [[NSMutableArray alloc] init];
     for(PHCollection *collection in topLevelUserCollections)
     {
-        if ([collection isKindOfClass:[PHAssetCollection class]])
-        {
-            if(![self.picker.mediaTypes isEqual:[NSNull null]] && self.picker != nil){
-                PHFetchOptions *options = [[PHFetchOptions alloc] init];
-                options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
-                PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+        if ([collection isKindOfClass:[PHAssetCollection class]]) {
+            if(![picker.mediaTypes isEqual:[NSNull null]] && picker != nil){
+                // TODO: This is breaking for DropBox for some reason. Passing no options works.
+//                PHFetchOptions *options = [[PHFetchOptions alloc] init];
+//                options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", picker.mediaTypes];
+//                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
                 
-                //Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
-                PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
+                PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+                PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options: nil];
                 
                 if (assetsFetchResult.count > 0) {
                     [userFetchResultArray addObject:assetsFetchResult];
@@ -221,12 +222,12 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         if ([collection isKindOfClass:[PHAssetCollection class]])
         {
             PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
-            if(![self.picker.mediaTypes isEqual:[NSNull null]] && self.picker != nil){
+            if(![picker.mediaTypes isEqual:[NSNull null]] && picker != nil){
                 //Smart collections are PHAssetCollectionType=2;
-                if(self.picker.customSmartCollections && [self.picker.customSmartCollections containsObject:@(assetCollection.assetCollectionSubtype)])
+                if(picker.customSmartCollections && [picker.customSmartCollections containsObject:@(assetCollection.assetCollectionSubtype)])
                 {
                     PHFetchOptions *options = [[PHFetchOptions alloc] init];
-                    options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
+                    options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", picker.mediaTypes];
                     options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
                     
                     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
