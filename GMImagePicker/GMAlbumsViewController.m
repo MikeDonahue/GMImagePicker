@@ -144,7 +144,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     }
     
     //Fetch PHAssetCollections:
-//    self.collectionsFetchResults = @[topLevelUserCollections, myPhotoStreamAlbums, cloudSharedAlbums, smartAlbums,  syncedAlbums];
+    //    self.collectionsFetchResults = @[topLevelUserCollections, myPhotoStreamAlbums, cloudSharedAlbums, smartAlbums,  syncedAlbums];
     PHFetchResult *topLevelUserCollections = [self.collectionsFetchResults objectAtIndex:0];
     PHFetchResult *myPhotoStream = [self.collectionsFetchResults objectAtIndex:1];
     PHFetchResult *cloudShared = [self.collectionsFetchResults objectAtIndex:2];
@@ -157,10 +157,10 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
     {
         if(![picker.mediaTypes isEqual:[NSNull null]] && picker != nil){
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
-            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", picker.mediaTypes];
-            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+            //            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", picker.mediaTypes];
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
             
-            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:nil];
+            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions: options];
             if (assetsFetchResult.count > 0) {
                 [allFetchResultArray addObject:assetsFetchResult];
                 [allFetchResultLabel addObject:NSLocalizedStringFromTableInBundle(@"picker.table.all-photos-label",  @"GMImagePicker", [NSBundle bundleForClass:GMImagePickerController.class], @"All photos")];
@@ -176,9 +176,9 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         if ([collection isKindOfClass:[PHAssetCollection class]]) {
             if(![picker.mediaTypes isEqual:[NSNull null]] && picker != nil){
                 // TODO: This is breaking for DropBox for some reason. Passing no options works.
-//                PHFetchOptions *options = [[PHFetchOptions alloc] init];
-//                options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", picker.mediaTypes];
-//                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+                PHFetchOptions *options = [[PHFetchOptions alloc] init];
+                //                options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", picker.mediaTypes];
+                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
                 
                 PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
                 PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options: nil];
@@ -198,21 +198,21 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
         if ([collection isKindOfClass:[PHAssetCollection class]])
         {
             PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
-
+            
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
-
+            
             options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", @[@(PHAssetMediaTypeImage)]];
-            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
+            
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
             if (assetsFetchResult.count > 0) {
                 [myPhotoStreamFetchResultArray addObject:assetsFetchResult];
                 [myPhotoStreamFetchResultLabel addObject:collection.localizedTitle];
             }
-
+            
         }
     }
-
+    
     
     //Smart albums: Sorted by descending creation date.
     NSMutableArray *smartFetchResultArray = [[NSMutableArray alloc] init];
@@ -228,7 +228,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                 {
                     PHFetchOptions *options = [[PHFetchOptions alloc] init];
                     options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", picker.mediaTypes];
-                    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+                    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
                     
                     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
                     if (assetsFetchResult.count > 0) {
@@ -251,7 +251,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
             
             options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", @[@(PHAssetMediaTypeImage)]];
-            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
             
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
             if (assetsFetchResult.count > 0) {
@@ -274,7 +274,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
             
             options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", @[@(PHAssetMediaTypeImage)]];
-            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
             
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
             if (assetsFetchResult.count > 0) {
