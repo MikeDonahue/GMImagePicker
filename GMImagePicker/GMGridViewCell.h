@@ -23,7 +23,7 @@
 //Selection overlay
 @property (nonatomic) BOOL shouldShowSelection;
 @property (nonatomic, strong) UIView *coverView;
-@property (nonatomic, strong) UIButton *selectedButton;
+@property (nonatomic, strong) UIImageView *selectedButton;
 @property (nonatomic, assign) PHImageRequestID assetRequestID;
 @property (nonatomic, assign, getter = isEnabled) BOOL enabled;
 

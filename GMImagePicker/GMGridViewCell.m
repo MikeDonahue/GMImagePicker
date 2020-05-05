@@ -106,20 +106,19 @@ static UIColor *backgroundColor;
         [self addSubview:_coverView];
         _coverView.hidden = YES;
         
-        _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _selectedButton = [UIImageView new];
 //        _selectedButton.frame = CGRectMake(2*self.bounds.size.width/3, 0*self.bounds.size.width/3, 31, 31);
         [_selectedButton setContentMode: UIViewContentModeScaleAspectFit];
         
         [[_selectedButton.widthAnchor constraintEqualToConstant:31] setActive:YES];
         [[_selectedButton.heightAnchor constraintEqualToConstant:31] setActive:YES];
         _selectedButton.contentMode = UIViewContentModeTopRight;
-        _selectedButton.adjustsImageWhenHighlighted = NO;
-        [_selectedButton setImage:nil forState:UIControlStateNormal];
+//        _selectedButton.adjustsImageWhenHighlighted = NO;
+//        [_selectedButton setImage:nil forState:UIControlStateNormal];
         _selectedButton.translatesAutoresizingMaskIntoConstraints = NO;
-        _selectedButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [_selectedButton setImage:[UIImage imageNamed:@"GMSelected" inBundle:[NSBundle bundleForClass:GMGridViewCell.class] compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
+//        _selectedButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        [_selectedButton setImage:[UIImage imageNamed:@"GMSelected" inBundle:[NSBundle bundleForClass:GMGridViewCell.class] compatibleWithTraitCollection:nil]];
         _selectedButton.hidden = NO;
-        _selectedButton.userInteractionEnabled = NO;
         [self addSubview:_selectedButton];
         
         [[_selectedButton.topAnchor constraintEqualToAnchor:self.topAnchor constant:4] setActive: YES];
@@ -163,8 +162,8 @@ static UIColor *backgroundColor;
         return;
     }
     
+    _selectedButton.hidden = !selected;
     _coverView.hidden = !selected;
-    _selectedButton.selected = selected;
 }
 
 -(NSString*)getDurationWithFormat:(NSTimeInterval)duration
