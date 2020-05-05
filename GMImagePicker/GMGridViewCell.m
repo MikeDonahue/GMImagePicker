@@ -107,7 +107,8 @@ static UIColor *backgroundColor;
         _coverView.hidden = YES;
         
         _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _selectedButton.frame = CGRectMake(2*self.bounds.size.width/3, 0*self.bounds.size.width/3, 31, 31);
+//        _selectedButton.frame = CGRectMake(2*self.bounds.size.width/3, 0*self.bounds.size.width/3, 31, 31);
+        [_selectedButton setContentMode: UIViewContentModeScaleAspectFit];
         
         [[_selectedButton.widthAnchor constraintEqualToConstant:31] setActive:YES];
         [[_selectedButton.heightAnchor constraintEqualToConstant:31] setActive:YES];
@@ -120,6 +121,9 @@ static UIColor *backgroundColor;
         _selectedButton.hidden = NO;
         _selectedButton.userInteractionEnabled = NO;
         [self addSubview:_selectedButton];
+        
+        [[_selectedButton.topAnchor constraintEqualToAnchor:self.topAnchor constant:4] setActive: YES];
+        [[_selectedButton.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:4] setActive: YES];
     }
 
     // Note: the views above are created in case this is toggled per cell, on the fly, etc.!
