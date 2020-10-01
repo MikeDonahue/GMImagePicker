@@ -176,6 +176,8 @@
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
             if(_allowVideo){
                 _mediaTypes = @[@(PHAssetMediaTypeImage),@(PHAssetMediaTypeVideo)];
+            } else {
+                _mediaTypes = @[@(PHAssetMediaTypeImage)];
             }
             options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.mediaTypes];
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
