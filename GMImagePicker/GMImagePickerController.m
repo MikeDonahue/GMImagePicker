@@ -174,12 +174,15 @@
     {
         if(![self.mediaTypes isEqual:[NSNull null]] && self != nil){
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
+            NSPredicate *predicate;
+            
+            
             if(_allowVideo){
-                _mediaTypes = @[@(PHAssetMediaTypeImage),@(PHAssetMediaTypeVideo)];
+                predicate = [NSPredicate predicateWithFormat:@"mediaType = %d || mediaType = %d", PHAssetMediaTypeImage, PHAssetMediaTypeVideo];
             } else {
-                _mediaTypes = @[@(PHAssetMediaTypeImage)];
+                predicate = [NSPredicate predicateWithFormat:@"mediaType = %d", PHAssetMediaTypeImage];
             }
-            options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.mediaTypes];
+            options.predicate = predicate;
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
             PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithOptions:options];
             
